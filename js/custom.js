@@ -1,223 +1,155 @@
-/*global jQuery:false */
-(function ($) {
-
-	var wow = new WOW(
-	  {
-		boxClass:     'wow',      // animated element css class (default is wow)
-		animateClass: 'animated', // animation css class (default is animated)
-		offset:       0,          // distance to the element when triggering the animation (default is 0)
-		mobile:       false       // trigger animations on mobile devices (true is default)
-	  }
-	);
-	wow.init();
-
-	//jQuery to collapse the navbar on scroll
-	$(window).scroll(function() {
-		if ($(".navbar").offset().top > 50) {
-			$(".navbar-fixed-top").addClass("top-nav-collapse");
-			$(".top-area").addClass("top-padding");
-			$(".navbar-brand").addClass("reduce");
-
-			$(".navbar-custom ul.nav ul.dropdown-menu").css("margin-top","11px");
-		
+(function($) {
+    "use strict";
+	
+	/* ..............................................
+	Loader 
+    ................................................. */
+	
+	$(window).on('load', function() { 
+		$('.preloader').fadeOut(); 
+		$('#preloader').delay(550).fadeOut('slow'); 
+		$('body').delay(450).css({'overflow':'visible'});
+	});
+    	
+	/* ..............................................
+    Navbar Bar
+    ................................................. */
+	
+	$('.navbar-nav .nav-link').on('click', function() {
+		var toggle = $('.navbar-toggler').is(':visible');
+		if (toggle) {
+			$('.navbar-collapse').collapse('hide');
+		}
+	});
+	
+	/* ..............................................
+    Fixed Menu
+    ................................................. */
+    
+	$(window).on('scroll', function () {
+		if ($(window).scrollTop() > 50) {
+			$('.top-header').addClass('fixed-menu');
 		} else {
-			$(".navbar-fixed-top").removeClass("top-nav-collapse");
-			$(".top-area").removeClass("top-padding");
-			$(".navbar-brand").removeClass("reduce");
-
-			$(".navbar-custom ul.nav ul.dropdown-menu").css("margin-top","16px");
-	
+			$('.top-header').removeClass('fixed-menu');
 		}
 	});
-	
-	//scroll to top
-	$(window).scroll(function(){
-		if ($(this).scrollTop() > 100) {
-			$('.scrollup').fadeIn();
-			} else {
-			$('.scrollup').fadeOut();
-		}
-	});
-	$('.scrollup').click(function(){
-		$("html, body").animate({ scrollTop: 0 }, 1000);
-			return false;
-	});
-	
 
+	/* ..............................................
+    Properties Filter
+    ................................................. */
+	var Container = $('.container');
+	Container.imagesLoaded(function () {
+		var portfolio = $('.properties-menu');
+		portfolio.on('click', 'button', function () {
+			$(this).addClass('active').siblings().removeClass('active');
+			var filterValue = $(this).attr('data-filter');
+			$grid.isotope({
+				filter: filterValue
+			});
+		});
+		var $grid = $('.properties-list').isotope({
+			itemSelector: '.properties-grid'
+		});
 
-	//jQuery for page scrolling feature - requires jQuery Easing plugin
-	$(function() {
-		$('.navbar-nav li a').bind('click', function(event) {
-			var $anchor = $(this);
-			var nav = $($anchor.attr('href'));
-			if (nav.length) {
-			$('html, body').stop().animate({				
-				scrollTop: $($anchor.attr('href')).offset().top				
-			}, 1500, 'easeInOutExpo');
-			
-			event.preventDefault();
+	});
+
+	/* ..............................................
+    Gallery
+    ................................................. */
+	
+	$(document).ready(function() {
+		$('.popup-gallery').magnificPopup({
+			delegate: 'a',
+			type: 'image',
+			tLoading: 'Loading image #%curr%...',
+			mainClass: 'mfp-img-mobile',
+			gallery: {
+				enabled: true,
+				navigateByImgClick: true,
+				preload: [0,1] // Will preload 0 - before current, and 1 after the current image
+			},
+			image: {
+				tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
+				titleSrc: function(item) {
+					return item.el.attr('title') + '<small>by Marsel Van Oosten</small>';
+				}
 			}
 		});
-		$('.page-scroll a').bind('click', function(event) {
-			var $anchor = $(this);
-			$('html, body').stop().animate({
-				scrollTop: $($anchor.attr('href')).offset().top
-			}, 1500, 'easeInOutExpo');
-			event.preventDefault();
+	});
+	
+	/* ..............................................
+    Gallery
+    ................................................. */
+	
+	$(document).ready(function() {
+		$('.owl-carousel').owlCarousel({
+			loop: true,
+			margin: 10,
+			dots: false,
+			//autoplay: true,
+            //autoplayTimeout: 3000,
+            //autoplayHoverPause: true,
+			responsiveClass: true,
+			responsive: {
+			  0: {
+				items: 1,
+				nav: true
+			  },
+			  600: {
+				items: 3,
+				nav: false
+			  },
+			  1000: {
+				items: 4,
+				nav: true,
+				loop: false,
+				margin: 15
+			  }
+			}
+		})
+	})
+	
+	
+	/* ..............................................
+    Scroll To Top
+    ................................................. */
+	
+	$(document).ready(function () {
+
+		$(window).scroll(function () {
+			if ($(this).scrollTop() > 100) {
+				$('#scroll-to-top').fadeIn();
+			} else {
+				$('#scroll-to-top').fadeOut();
+			}
 		});
-	});
 
-	//owl carousel
-	$('#owl-works').owlCarousel({
-            items : 4,
-            itemsDesktop : [1199,5],
-            itemsDesktopSmall : [980,5],
-            itemsTablet: [768,5],
-            itemsTabletSmall: [550,2],
-            itemsMobile : [480,2],
-	});
-	
-	//nivo lightbox
-	$('.owl-carousel .item a').nivoLightbox({
-		effect: 'fadeScale',                             // The effect to use when showing the lightbox
-		theme: 'default',                           // The lightbox theme to use
-		keyboardNav: true,                          // Enable/Disable keyboard navigation (left/right/escape)
-		clickOverlayToClose: true,                  // If false clicking the "close" button will be the only way to close the lightbox
-		onInit: function(){},                       // Callback when lightbox has loaded
-		beforeShowLightbox: function(){},           // Callback before the lightbox is shown
-		afterShowLightbox: function(lightbox){},    // Callback after the lightbox is shown
-		beforeHideLightbox: function(){},           // Callback before the lightbox is hidden
-		afterHideLightbox: function(){},            // Callback after the lightbox is hidden
-		onPrev: function(element){},                // Callback when the lightbox gallery goes to previous item
-		onNext: function(element){},                // Callback when the lightbox gallery goes to next item
-		errorMessage: 'The requested content cannot be loaded. Please try again later.' // Error message when content can't be loaded
-	});
-
-	jQuery('.appear').appear();
-	jQuery(".appear").on("appear", function(data) {
-			var id = $(this).attr("id");
-			jQuery('.nav li').removeClass('active');
-			jQuery(".nav a[href='#" + id + "']").parent().addClass("active");					
+		$('#scroll-to-top').click(function () {
+			$("html, body").animate({
+				scrollTop: 0
+			}, 600);
+			return false;
 		});
 
-		
-		//parallax
-        if ($('.parallax').length)
-        {
-			$(window).stellar({
-				responsive:true,
-                scrollProperty: 'scroll',
-                parallaxElements: false,
-                horizontalScrolling: false,
-                horizontalOffset: 0,
-                verticalOffset: 0
-            });
-
-        }
-		
-		
-(function ($, window, document, undefined) {
-
-    var gridContainer = $('#grid-container'),
-        filtersContainer = $('#filters-container');
-
-	// init cubeportfolio
-    gridContainer.cubeportfolio({
-
-        defaultFilter: '*',
-
-        animationType: 'sequentially',
-
-        gapHorizontal: 50,
-
-        gapVertical: 40,
-
-        gridAdjustment: 'responsive',
-
-        caption: 'fadeIn',
-
-        displayType: 'lazyLoading',
-
-        displayTypeSpeed: 100,
-
-        // lightbox
-        lightboxDelegate: '.cbp-lightbox',
-        lightboxGallery: true,
-        lightboxTitleSrc: 'data-title',
-        lightboxShowCounter: true,
-
-        // singlePage popup
-        singlePageDelegate: '.cbp-singlePage',
-        singlePageDeeplinking: true,
-        singlePageStickyNavigation: true,
-        singlePageShowCounter: true,
-        singlePageCallback: function (url, element) {
-
-            // to update singlePage content use the following method: this.updateSinglePage(yourContent)
-            var t = this;
-
-            $.ajax({
-                url: url,
-                type: 'GET',
-                dataType: 'html',
-                timeout: 5000
-            })
-            .done(function(result) {
-                t.updateSinglePage(result);
-            })
-            .fail(function() {
-                t.updateSinglePage("Error! Please refresh the page!");
-            });
-
-        },
-
-        // singlePageInline
-        singlePageInlineDelegate: '.cbp-singlePageInline',
-        singlePageInlinePosition: 'above',
-        singlePageInlineShowCounter: true,
-        singlePageInlineInFocus: true,
-        singlePageInlineCallback: function(url, element) {
-            // to update singlePageInline content use the following method: this.updateSinglePageInline(yourContent)
-        }
-    });
-
-    // add listener for filters click
-    filtersContainer.on('click', '.cbp-filter-item', function (e) {
-
-        var me = $(this), wrap;
-
-        // get cubeportfolio data and check if is still animating (reposition) the items.
-        if ( !$.data(gridContainer[0], 'cubeportfolio').isAnimating ) {
-
-            if ( filtersContainer.hasClass('cbp-l-filters-dropdown') ) {
-                wrap = $('.cbp-l-filters-dropdownWrap');
-
-                wrap.find('.cbp-filter-item').removeClass('cbp-filter-item-active');
-
-                wrap.find('.cbp-l-filters-dropdownHeader').text(me.text());
-
-                me.addClass('cbp-filter-item-active');
-            } else {
-                me.addClass('cbp-filter-item-active').siblings().removeClass('cbp-filter-item-active');
-            }
-
-        }
-
-        // filter the items
-        gridContainer.cubeportfolio('filter', me.data('filter'), function () {});
-
-    });
-
-    // activate counter for filters
-    gridContainer.cubeportfolio('showCounter', filtersContainer.find('.cbp-filter-item'));
-
-})(jQuery, window, document);
-		
+	});
 	
-})(jQuery);
-$(window).load(function() {
-	$(".loader").delay(100).fadeOut();
-	$("#page-loader").delay(100).fadeOut("fast");
-});
+	
+	/* ..............................................
+    Smooth Scroll
+    ................................................. */
+	
+	$('a[href*="#"]:not([href="#"])').on('click', function() {
+		if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') || location.hostname == this.hostname) {
+		  var target = $(this.hash);
+			  target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+			  if (target.length) {
+				$('html,body').animate({
+				  scrollTop: target.offset().top - 65,
+				  }, 1000);
+				  return false;
+			  }
+		}
+	});
 
 	
+}(jQuery));
